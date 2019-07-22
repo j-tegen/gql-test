@@ -4,8 +4,6 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ormConfig } from './config'
 
-console.log('PORT: ', parseInt(process.env.TYPEORM_PORT))
-
 @Module({
   imports: [
     TenantModule,
@@ -13,6 +11,7 @@ console.log('PORT: ', parseInt(process.env.TYPEORM_PORT))
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,
       autoSchemaFile: 'schema.gql',
+      playground: true,
     }),
   ],
 })

@@ -11,7 +11,7 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
     ports:
-      - "3007:3006"
+      - '3007:3006'
 
   adminer:
     image: adminer
@@ -19,13 +19,11 @@ services:
     ports:
       - 8088:8080
 
-
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - NODE_ENV=development
+    build: .
+    entrypoint: npm run dev
+    volumes:
+      - ./src:/var/www/app/src
     env_file:
       - .env
     ports:
@@ -34,7 +32,3 @@ services:
       - db
     links:
       - db:db
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run start:dev
