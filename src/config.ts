@@ -7,7 +7,6 @@ export const ormConfig: TypeOrmModuleOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   database: process.env.TYPEORM_DATABASE,
-  entities: ['src/**/models/**.model{.ts,.js}'],
+  entities: [`${__dirname}/**/models/*.model.js`],
   synchronize: true,
 }
-console.log(ormConfig)

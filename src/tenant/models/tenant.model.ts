@@ -1,11 +1,16 @@
 import { Field, ID, ObjectType } from 'type-graphql'
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, Column, OneToMany, PrimaryColumn, BeforeInsert } from 'typeorm'
+import { User } from '@app/user/models/user.model'
+import { CustomerTypes } from '../tenant.enums'
+import * as shortid from 'shortid'
 
 @ObjectType()
 @Entity()
 export class Tenant {
   @Field(type => ID)
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('varchar', {
+    length: 10,
+  })
   id: string
 
   @Field()
@@ -15,4 +20,18 @@ export class Tenant {
   @Field()
   @Column('timestamp', { nullable: false, default: () => 'CURRENT_TIMESTAMP' })
   creationDate: Date
+
+  @Field(type => CustomerTypes)
+  @Column('enum', { enum: CustomerTypes, default: CustomerTypes.trial })
+  customerType: CustomerTypes
+
+  @Field(type => [User])
+  @OneToMany(type => User, user => user.tenant)
+  users: User[]
+
+  @BeforeInsert()
+  setId() {
+    const id: string = shortid.generate()
+    this.id = id
+  }
 }
