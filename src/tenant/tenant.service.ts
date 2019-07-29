@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { Tenant } from './models/tenant.model'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { NewTenant } from './dto/arguments'
 
 @Injectable()
 export class TenantService {
@@ -11,7 +10,7 @@ export class TenantService {
     private readonly tenantRepository: Repository<Tenant>
   ) {}
 
-  async createTenant(payload: NewTenant): Promise<Tenant> {
+  async createTenant(payload: Partial<Tenant>): Promise<Tenant> {
     const tenant: Tenant = await this.tenantRepository.create(payload)
     return this.tenantRepository.save(tenant)
   }

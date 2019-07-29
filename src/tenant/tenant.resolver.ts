@@ -1,7 +1,8 @@
 import { Tenant } from './models/tenant.model'
 import { TenantService } from './tenant.service'
-import { NotFoundException } from '@nestjs/common'
-import { NewTenant, RegisterTenantenant } from './dto/arguments'
+import { NotFoundException, UseGuards } from '@nestjs/common'
+import { NewTenant, RegisterTenant } from './dto/arguments'
+import { User as CurrentUser } from '../auth/user.decorator'
 import {
   Resolver,
   Query,
@@ -13,6 +14,8 @@ import {
 import { User } from '@app/user/models/user.model'
 import { UserService } from '@app/user/user.service'
 import { GraphQLError } from 'graphql'
+import { GqlAuthGuard } from '@app/auth/graphql-auth.guard'
+import { Roles } from '@app/user/user.enums'
 
 @Resolver(of => Tenant)
 export class TenantResolver {
@@ -21,8 +24,10 @@ export class TenantResolver {
     private readonly userService: UserService
   ) {}
 
+  @UseGuards(GqlAuthGuard)
   @Query(returns => Tenant)
-  async tenant(@Args('id') id: string): Promise<Tenant> {
+  async tenant(@CurrentUser() currentUser: User): Promise<Tenant> {
+    const { id } = currentUser.tenant
     const tenant: Tenant = await this.tenantService.getTenant(id)
     if (!tenant) {
       throw new NotFoundException(id)
@@ -43,13 +48,14 @@ export class TenantResolver {
     name,
     email,
     password,
-  }: RegisterTenantenant) {
+  }: RegisterTenant) {
     const existingUser: User = await this.userService.getUserByEmail(email)
 
     if (existingUser) {
       throw new GraphQLError('User exists')
     }
     const tenant = await this.tenantService.createTenant({ name })
+    const role: Roles = Roles.admin
 
     return this.userService.createUser(
       {
@@ -57,6 +63,7 @@ export class TenantResolver {
         password,
         firstName,
         lastName,
+        role,
       },
       tenant
     )

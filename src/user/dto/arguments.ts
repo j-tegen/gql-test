@@ -2,7 +2,7 @@ import { MaxLength } from 'class-validator'
 import { Field, ArgsType, InputType } from 'type-graphql'
 
 @InputType()
-export class NewUser {
+export class UserArgs {
   @Field({ nullable: false })
   @MaxLength(50)
   firstName: string
@@ -18,7 +18,10 @@ export class NewUser {
   @Field({ nullable: true, defaultValue: '' })
   @MaxLength(100)
   phone?: string
+}
 
+@InputType()
+export class NewUser extends UserArgs {
   @Field({ nullable: false })
   @MaxLength(50)
   password: string

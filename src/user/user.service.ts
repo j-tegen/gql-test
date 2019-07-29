@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './models/user.model'
 import { Repository } from 'typeorm'
-import { NewUser } from './dto/arguments'
+import { NewUser, UserArgs } from './dto/arguments'
 import { generateToken } from '@app/common/hash'
 import { Tenant } from '@app/tenant/models/tenant.model'
 
@@ -14,7 +14,10 @@ export class UserService {
     @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  public async createUser(payload: NewUser, tenant: Tenant): Promise<User> {
+  public async createUser(
+    payload: Partial<User>,
+    tenant: Tenant
+  ): Promise<User> {
     const passwordHash: string = await this.getPasswordHash(payload)
     const user: User = await this.userRepository.create({
       ...payload,
@@ -48,7 +51,7 @@ export class UserService {
       .getMany()
   }
 
-  private async getPasswordHash(payload: NewUser) {
+  private async getPasswordHash(payload: Partial<User>) {
     const { password } = payload
     if (password) {
       return this.getHash(password)

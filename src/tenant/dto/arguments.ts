@@ -9,7 +9,7 @@ export class NewTenant {
 }
 
 @ArgsType()
-export class RegisterTenantenant extends NewTenant {
+export class RegisterTenant extends NewTenant {
   @Field({ nullable: false })
   @MaxLength(50)
   firstName: string

@@ -9,7 +9,7 @@ import {
   Parent,
   ResolveProperty,
 } from '@nestjs/graphql'
-import { NewUser } from './dto/arguments'
+import { UserArgs } from './dto/arguments'
 import { GqlAuthGuard } from '@app/auth/graphql-auth.guard'
 import { User as CurrentUser } from '../auth/user.decorator'
 import { TenantService } from '@app/tenant/tenant.service'
@@ -36,15 +36,20 @@ export class UserResolver {
     return user
   }
 
-  // @Query(returns => [User])
-  // async users(): Promise<User[]> {
-  //   return this.userService.getUsers()
-  // }
+  @Query(returns => [User])
+  @UseGuards(GqlAuthGuard)
+  async users(@CurrentUser() currentUser: User): Promise<User[]> {
+    return this.userService.getUsers(currentUser.tenant.id)
+  }
 
-  // @Mutation(returns => User)
-  // async addUser(@Args('user') user: NewUser): Promise<User> {
-  //   return this.userService.createUser(user, )
-  // }
+  @Mutation(returns => User)
+  @UseGuards(GqlAuthGuard)
+  async addUser(
+    @CurrentUser() currentUser: User,
+    @Args('user') user: UserArgs
+  ): Promise<User> {
+    return this.userService.createUser(user, currentUser.tenant)
+  }
 
   @ResolveProperty()
   async tenant(@Parent() user): Promise<Tenant> {
