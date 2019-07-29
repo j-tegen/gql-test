@@ -1,7 +1,7 @@
 import { Tenant } from './models/tenant.model'
 import { TenantService } from './tenant.service'
 import { NotFoundException, UseGuards } from '@nestjs/common'
-import { NewTenant, RegisterTenant } from './dto/arguments'
+import { RegisterTenant } from './dto/arguments'
 import { User as CurrentUser } from '../auth/user.decorator'
 import {
   Resolver,

@@ -10,6 +10,8 @@ services:
       MYSQL_DATABASE: collabio
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
+    volumes:
+      - ./localdb:/var/lib/mysql
 
   adminer:
     image: adminer
