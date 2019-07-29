@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:10-alpine
 
 RUN mkdir -p /var/www/app
 
@@ -15,5 +15,9 @@ COPY ./src ./src
 
 COPY nodemon.json .
 COPY tsconfig.json .
+
+EXPOSE 3333
+
+RUN npm run build
 
 CMD ["npm", "run", "serve"]

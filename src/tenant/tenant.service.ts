@@ -12,7 +12,8 @@ export class TenantService {
   ) {}
 
   async createTenant(payload: NewTenant): Promise<Tenant> {
-    return await this.tenantRepository.save(payload)
+    const tenant: Tenant = await this.tenantRepository.create(payload)
+    return this.tenantRepository.save(tenant)
   }
 
   async getTenants(): Promise<Tenant[]> {

@@ -1,15 +1,8 @@
 import { MaxLength } from 'class-validator'
-import { Field, ArgsType } from 'type-graphql'
+import { Field, ArgsType, InputType } from 'type-graphql'
 
-@ArgsType()
-export class NewTenant {
-  @Field({ nullable: false })
-  @MaxLength(50)
-  name: string
-}
-
-@ArgsType()
-export class RegisterTenantenant extends NewTenant {
+@InputType()
+export class NewUser {
   @Field({ nullable: false })
   @MaxLength(50)
   firstName: string
@@ -22,7 +15,17 @@ export class RegisterTenantenant extends NewTenant {
   @MaxLength(100)
   email: string
 
+  @Field({ nullable: true, defaultValue: '' })
+  @MaxLength(100)
+  phone?: string
+
   @Field({ nullable: false })
   @MaxLength(50)
   password: string
+}
+
+@InputType()
+export class UserBatch {
+  @Field(type => [NewUser])
+  users: NewUser[]
 }

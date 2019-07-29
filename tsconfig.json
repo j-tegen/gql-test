@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6", "es2016", "esnext.asynciterable"],
-    "target": "esnext",
+    "lib": ["es2016", "esnext.asynciterable", "dom"],
+    "target": "es2016",
     "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@app/*": ["src/*"]
+    }
   },
-  "paths": {
-    "@/*": ["src/*"]
-  },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules"]
 }
