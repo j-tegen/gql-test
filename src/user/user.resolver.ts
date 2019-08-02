@@ -25,10 +25,10 @@ export class UserResolver {
   @Query(returns => User, { nullable: true })
   @UseGuards(GqlAuthGuard)
   async user(
-    @Args('id') id: string,
+    @Args('id') id: number,
     @CurrentUser() currentUser: User
   ): Promise<User> {
-    const tenantId: string = currentUser.tenant.id
+    const tenantId: number = currentUser.tenant.id
     const user: User = await this.userService.getUserById(id, tenantId)
     if (!user) {
       throw new NotFoundException(id)

@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './models/user.model'
 import { Repository } from 'typeorm'
-import { NewUser, UserArgs } from './dto/arguments'
 import { generateToken } from '@app/common/hash'
 import { Tenant } from '@app/tenant/models/tenant.model'
 
@@ -28,7 +27,7 @@ export class UserService {
     return this.userRepository.save(user)
   }
 
-  public async getUserById(id: string, tenantId: string): Promise<User> {
+  public async getUserById(id: number, tenantId: number): Promise<User> {
     return this.userRepository
       .createQueryBuilder('user')
       .innerJoinAndSelect('user.tenant', 'tenant')
@@ -43,11 +42,27 @@ export class UserService {
       .getOne()
   }
 
-  public async getUsers(tenantId: string): Promise<User[]> {
+  public async getUsers(tenantId: number): Promise<User[]> {
     return this.userRepository
       .createQueryBuilder('user')
       .innerJoinAndSelect('user.tenant', 'tenant')
       .where('tenant.id = :tenantId', { tenantId })
+      .getMany()
+  }
+
+  public async getConversationUsers(conversationId: number): Promise<User[]> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.conversations', 'conversation')
+      .where('conversation.id = :conversationId', { conversationId })
+      .getMany()
+  }
+
+  public async getWorkspaceUsers(workspaceId: number): Promise<User[]> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.workspaces', 'workspace')
+      .where('workspace.id = :workspaceId', { workspaceId })
       .getMany()
   }
 

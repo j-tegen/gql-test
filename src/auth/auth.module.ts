@@ -26,7 +26,7 @@ import { AuthResolver } from './auth.resolver'
     JwtModule.register({
       secret: process.env.SECRET || 'veryverysecret',
       signOptions: {
-        expiresIn: 3600, // 1hr
+        expiresIn: 24 * 3600, // 1hr
       },
     }),
   ],
