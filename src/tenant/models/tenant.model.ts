@@ -1,17 +1,24 @@
 import { Field, ID, ObjectType } from 'type-graphql'
-import { Entity, Column, OneToMany, PrimaryColumn, BeforeInsert } from 'typeorm'
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+} from 'typeorm'
 import { User } from '@app/user/models/user.model'
 import { CustomerTypes } from '../tenant.enums'
-import * as shortid from 'shortid'
+import { Conversation } from '@app/conversation/models/conversation.model'
+import { Workspace } from '@app/workspace/models/workspace.model'
 
 @ObjectType()
 @Entity()
 export class Tenant {
   @Field(type => ID)
-  @PrimaryColumn('varchar', {
-    length: 10,
-  })
-  id: string
+  @PrimaryGeneratedColumn()
+  id: number
 
   @Field()
   @Column('varchar', { length: 50 })
@@ -29,9 +36,12 @@ export class Tenant {
   @OneToMany(type => User, user => user.tenant)
   users: User[]
 
-  @BeforeInsert()
-  setId() {
-    const id: string = shortid.generate()
-    this.id = id
-  }
+  @Field(type => [Workspace])
+  @OneToMany(type => Workspace, workspace => workspace.tenant)
+  workspaces: Workspace[]
+
+  @Field(type => [Conversation])
+  @ManyToOne(type => Conversation, conversation => conversation.tenant)
+  @JoinColumn({ name: 'conversationId' })
+  conversations: Conversation[]
 }

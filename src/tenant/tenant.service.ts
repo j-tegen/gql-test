@@ -19,7 +19,7 @@ export class TenantService {
     return await this.tenantRepository.find()
   }
 
-  async getTenant(id: string): Promise<Tenant> {
+  async getTenant(id: number): Promise<Tenant> {
     return this.tenantRepository.findOne(id)
   }
 }

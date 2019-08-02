@@ -3,22 +3,23 @@ import {
   Entity,
   Column,
   ManyToOne,
-  PrimaryColumn,
-  BeforeInsert,
   JoinColumn,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Roles } from '../user.enums'
 import { Tenant } from '@app/tenant/models/tenant.model'
-import * as shortid from 'shortid'
+import { Conversation } from '@app/conversation/models/conversation.model'
+import { Message } from '@app/message/models/message.model'
+import { Workspace } from '@app/workspace/models/workspace.model'
 
 @ObjectType()
 @Entity()
 export class User {
   @Field(type => ID)
-  @PrimaryColumn('varchar', {
-    length: 10,
-  })
-  id: string
+  @PrimaryGeneratedColumn()
+  id: number
 
   @Field()
   @Column({ length: 100, unique: true })
@@ -59,12 +60,19 @@ export class User {
   @JoinColumn({ name: 'tenantId' })
   tenant: Tenant
 
+  @Field(type => [Conversation])
+  @ManyToMany(type => Conversation, conversation => conversation.users)
+  conversations: Conversation[]
+
+  @Field(type => [Message])
+  @OneToMany(type => Message, message => message.user)
+  messages: Message[]
+
+  @Field(type => [Workspace])
+  @ManyToMany(type => Workspace, workspace => workspace.users)
+  workspaces: Workspace[]
+
   @Field()
   @Column('timestamp', { nullable: false, default: () => 'CURRENT_TIMESTAMP' })
   creationDate: Date
-
-  @BeforeInsert()
-  async setId() {
-    this.id = shortid.generate()
-  }
 }
